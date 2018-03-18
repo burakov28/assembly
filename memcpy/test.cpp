@@ -10,6 +10,9 @@ using namespace std;
 
 const size_t MAXLEN = 70;
 
+int timeBuiltIn = 0;
+int timeMy = 0;
+
 void genRandomString(char* ptr, size_t len) {
   for (size_t i = 0; i < len; ++i) {
     ptr[i] = 'a' + (rand() % ('z' - 'a' + 1));
@@ -41,8 +44,15 @@ bool test(const char* src, size_t len, string tag, size_t shift = 0) {
   unique_ptr<char[]> dstCorrect(new char[len + shift]);
   unique_ptr<char[]> dstTesting(new char[len + shift]);
 
+  int cur = clock();
   memcpy(dstCorrect.get() + shift, src, len);
+  int dcur  = clock();
+  timeBuiltIn += (dcur - cur);
+
+  cur = clock();
   nasm::memcpy(dstTesting.get() + shift, src, len);
+  dcur = clock();
+  timeMy += (dcur - cur);
 
   char* pCorrect = dstCorrect.get() + shift;
   char* pTesting = dstTesting.get() + shift;
@@ -50,7 +60,7 @@ bool test(const char* src, size_t len, string tag, size_t shift = 0) {
   for (size_t i = 0; i < len; ++i) {
     if (pCorrect[i] != pTesting[i]) {
       cerr << "FAIL!" << endl;
-      if (len < MAXLEN) {
+      if (len <= MAXLEN) {
         print(pCorrect, len, "Correct");
         print(pTesting, len, "Testing");
         for (size_t j = 0; j < i + 9; ++j) {
@@ -136,5 +146,8 @@ int main() {
     return 0;
   }
   cout << endl;
+
+  cout << "BuiltIn time: " << timeBuiltIn << endl;
+  cout << "My time: " << timeMy << endl;
   return 0;
 }

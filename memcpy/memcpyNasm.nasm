@@ -5,36 +5,29 @@ global memcpyNasm
 ; rdx - number of bytes
 
 memcpyNasm:
-    push rax
-    push rbx
-    push rdi
-    push rsi
-    push rdx
+     push rax
+     push rbx
 
-    call precopy
+     call precopy
 
-    push rdx
-    mov rbx, rdi
-    call get_bytes_to_align
-    mov rdx, rax
-    mov rbx, rsi
-    call get_bytes_to_align
-    mov rbx, rdx
-    pop rdx
+     push rdx
+     mov rbx, rdi
+     call get_bytes_to_align
+     mov rdx, rax
+     mov rbx, rsi
+     call get_bytes_to_align
+     mov rbx, rdx
+     pop rdx
 
-    sub rdx, rax  ; important!
-
-    cmp rax, rbx
-    jg source_margin_greater
-    jmp source_margin_less_or_equal
+     sub rdx, rax  ; important!
+     cmp rax, rbx
+     jg source_margin_greater
+     jmp source_margin_less_or_equal
 after_margin_comparision:
 
-    pop rdx
-    pop rsi
-    pop rdi
-    pop rbx
-    pop rax
-    ret
+     pop rbx
+     pop rax
+     ret
 
 
 ; rbx - address
@@ -60,10 +53,10 @@ source_margin_greater:
     mov [rdi + 24], rax
     pop rax
 
-    add rbx, 16
     add rdi, rbx
+    add rdi, 16
     add rsi, rax
-
+    add rbx, 16
     sub rbx, rax
     mov rax, rbx
 
